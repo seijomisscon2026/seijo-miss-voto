@@ -438,7 +438,7 @@
         script.onerror = () => {
           clearTimeout(timer);
           cleanup();
-          reject(new Error('Apps Scriptとの通信に失敗しました。API_URLが正しいか確認してください。'));
+          reject(new Error('通信がタイムアウトしました。時間をおいて再度試してください。'));
         };
 
         script.src = API_URL + '?' + query.toString();
