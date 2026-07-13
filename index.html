@@ -953,7 +953,7 @@
 
       $('completionFinalist').textContent = `FINALIST ${String(candidateIndex + 1).padStart(2, '0')}`;
       $('completionName').textContent = candidate.name;
-      $('streakText').textContent = `${streakCount}日連続投票ありがとう！`;
+      $('streakText').textContent = `${streakCount}日連続投票中！`;
       $('voteTime').textContent = formatVoteTime(data?.voteTimestamp);
       $('shareText').textContent = shareText;
 
