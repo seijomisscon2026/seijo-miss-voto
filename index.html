@@ -169,92 +169,121 @@
 
     .hidden { display: none !important; }
 
-    /* 完了画面 */
+    /* 投票完了画面：1画面スクショを最優先 */
+    body.completion-mode .logo {
+      display: none;
+    }
+
+    body.completion-mode .page {
+      padding-top: 8px;
+    }
+
     .completion {
-      animation: reveal .45s ease both;
+      animation: reveal .35s ease both;
     }
 
     @keyframes reveal {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
+    .completion-main {
+      overflow: hidden;
+      margin-bottom: 12px;
+      background: rgba(255,255,255,.92);
+    }
+
     .completion-photo-wrap {
-      position: relative;
       background: #fff;
+      border-bottom: 1px solid rgba(145,39,42,.10);
     }
 
     .completion-photo {
       display: block;
       width: 100%;
-      max-height: 900px;
+      height: min(55svh, 500px);
       object-fit: contain;
+      object-position: center;
       background: #fff;
     }
 
-    .completion-meta {
-      padding: 20px 22px 24px;
+    .completion-summary {
+      padding: 9px 16px 14px;
       text-align: center;
     }
 
-    .completion-meta .contest {
-      color: var(--wine);
-      letter-spacing: .12em;
-      font-size: 13px;
-    }
-
-    .completion-meta .finalist {
-      color: var(--gold);
-      letter-spacing: .18em;
-      margin: 8px 0 3px;
-    }
-
-    .completion-meta h2 {
-      color: var(--wine-dark);
-      font-size: 38px;
-      margin: 5px 0 0;
-    }
-
-    .success-card {
-      padding: 26px 22px;
-      text-align: center;
-    }
-
-    .success-pill {
-      display: inline-flex;
+    .identity-line {
+      display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 10px;
-      padding: 13px 24px;
+      gap: 9px;
+      flex-wrap: wrap;
+      color: var(--gold);
+      letter-spacing: .09em;
+      line-height: 1.2;
+    }
+
+    .identity-line .contest {
+      color: var(--wine);
+      font-size: 10px;
+    }
+
+    .identity-line .separator {
+      color: rgba(145,39,42,.32);
+    }
+
+    .identity-line .finalist {
+      font-size: 11px;
+    }
+
+    .completion-name {
+      color: var(--wine-dark);
+      font-size: clamp(25px, 7vw, 34px);
+      line-height: 1.05;
+      margin: 5px 0 9px;
+    }
+
+    .completion-complete {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 19px;
       border-radius: 999px;
       color: #fff;
       background: linear-gradient(135deg, #55bd73, #399b57);
-      font-size: 21px;
+      font-size: 16px;
       font-weight: 700;
-      box-shadow: 0 10px 24px rgba(46,146,77,.18);
+      box-shadow: 0 7px 16px rgba(46,146,77,.15);
     }
 
-    .success-card h3 {
+    .streak {
       color: var(--wine);
-      font-size: clamp(27px, 7vw, 42px);
-      margin: 24px 0 10px;
+      font-size: clamp(20px, 5.5vw, 27px);
+      line-height: 1.15;
+      margin: 10px 0 4px;
     }
 
-    .success-card .tomorrow {
-      font-size: 17px;
+    .tomorrow {
       margin: 0;
+      font-size: 13px;
+      line-height: 1.35;
     }
 
     .vote-time {
-      border-top: 1px dashed rgba(213,168,78,.62);
-      padding-top: 18px;
-      margin-top: 20px;
+      margin-top: 8px;
+      padding-top: 7px;
+      border-top: 1px dashed rgba(213,168,78,.58);
       color: #746461;
-      font-size: 14px;
+      font-size: 10px;
+      line-height: 1.25;
     }
 
+    /* シェア部分はスクロール後に表示 */
     .share-card {
       padding: 25px 18px;
       text-align: center;
+      margin-top: 0;
     }
 
     .share-card h3 {
@@ -318,6 +347,29 @@
       }
       .candidate-name { font-size: 20px; }
       .share-button { font-size: 12px; }
+      body.completion-mode .page {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+      .completion-photo {
+        height: min(54svh, 470px);
+      }
+      .completion-main {
+        border-radius: 22px;
+      }
+      .completion-summary {
+        padding: 8px 12px 12px;
+      }
+      .identity-line {
+        gap: 7px;
+      }
+      .completion-complete {
+        font-size: 15px;
+        padding: 8px 17px;
+      }
+      .share-button {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -338,22 +390,25 @@
     </section>
 
     <section id="completionView" class="completion hidden">
-      <article class="panel">
+      <article class="panel completion-main">
         <div class="completion-photo-wrap">
           <img id="completionPhoto" class="completion-photo" alt="">
         </div>
-        <div class="completion-meta">
-          <div class="contest">SEIJO MISS CONTEST 2026</div>
-          <div id="completionFinalist" class="finalist"></div>
-          <h2 id="completionName"></h2>
-        </div>
-      </article>
 
-      <article class="panel success-card">
-        <div class="success-pill">✓ 投票が完了しました</div>
-        <h3 id="streakText"></h3>
-        <p class="tomorrow">明日もこのページから投票できます</p>
-        <div id="voteTime" class="vote-time"></div>
+        <div class="completion-summary">
+          <div class="identity-line">
+            <span class="contest">SEIJO MISS CONTEST 2026</span>
+            <span class="separator">│</span>
+            <span id="completionFinalist" class="finalist"></span>
+          </div>
+
+          <h2 id="completionName" class="completion-name"></h2>
+
+          <div class="completion-complete">✓ 投票が完了しました</div>
+          <h3 id="streakText" class="streak"></h3>
+          <p class="tomorrow">明日もこのページから投票できます</p>
+          <div id="voteTime" class="vote-time"></div>
+        </div>
       </article>
 
       <article class="panel share-card">
@@ -472,7 +527,7 @@
         button.dataset.id = candidate.id;
 
         button.innerHTML = `
-          <img src="./assets/completion/${candidate.id}_1.jpeg" alt="${candidate.name}">
+          <img src="./assets/candidates/${candidate.id}.jpeg" alt="${candidate.name}">
           <div>
             <div class="candidate-number">FINALIST ${String(index + 1).padStart(2, '0')}</div>
             <div class="candidate-name">${candidate.name}</div>
@@ -500,6 +555,7 @@
 
     function showCompletion(data) {
       completionData = data;
+      document.body.classList.add('completion-mode');
       const candidateIndex = CANDIDATES.findIndex(item => item.id === data.candidateId);
       const shareText = buildShareText(data.candidateName);
 
