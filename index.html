@@ -307,9 +307,8 @@
 
     .completion-card {
       position: relative;
-      min-height: calc(100svh - 12px);
-      display: grid;
-      grid-template-rows: minmax(0,1fr) auto;
+      min-height: 0;
+      display: block;
       background: rgba(255,255,255,.96);
     }
 
@@ -326,7 +325,7 @@
       min-height: 0;
       padding: 8px 8px 0;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
       overflow: hidden;
       background:
@@ -335,13 +334,13 @@
 
     .completion-photo {
       display: block;
-      width: auto;
+      width: 100%;
       height: auto;
       max-width: 100%;
-      max-height: 100%;
+      max-height: min(61svh, 560px);
       object-fit: contain;
-      object-position: center;
-      border-radius: 17px 17px 8px 8px;
+      object-position: center bottom;
+      border-radius: 17px 17px 0 0;
       opacity: 0;
       transition: opacity .24s ease;
     }
@@ -360,21 +359,23 @@
 
     .completion-summary {
       position: relative;
-      padding: 9px 13px 13px;
+      margin-top: -1px;
+      padding: 12px 13px 16px;
+      min-height: 236px;
       text-align: center;
       border-top: 1px solid rgba(145,39,42,.08);
-      background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(255,251,248,.98));
+      background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(255,251,248,.99));
     }
 
     .identity-row {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 7px;
-      flex-wrap: wrap;
-      font-size: 10px;
-      line-height: 1.2;
-      letter-spacing: .10em;
+      gap: 9px;
+      flex-wrap: nowrap;
+      font-size: 11px;
+      line-height: 1.25;
+      letter-spacing: .11em;
     }
 
     .contest-label { color: var(--wine); }
@@ -382,9 +383,9 @@
     .finalist-label { color: var(--gold); }
 
     .completion-name {
-      margin: 4px 0 8px;
+      margin: 5px 0 9px;
       color: var(--wine-deep);
-      font-size: clamp(25px, 7.2vw, 34px);
+      font-size: clamp(28px, 7.8vw, 38px);
       line-height: 1.05;
     }
 
@@ -392,13 +393,14 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
-      padding: 8px 18px;
+      gap: 8px;
+      min-width: min(88%, 360px);
+      padding: 10px 22px;
       color: #fff;
       border-radius: 999px;
       background: linear-gradient(135deg, #55bd73, #379954);
       box-shadow: 0 8px 17px rgba(46,146,77,.15);
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 700;
     }
 
@@ -414,9 +416,9 @@
     }
 
     .streak-text {
-      margin: 9px 0 3px;
+      margin: 12px 0 4px;
       color: var(--wine);
-      font-size: clamp(20px, 5.6vw, 27px);
+      font-size: clamp(22px, 6.1vw, 30px);
       line-height: 1.16;
     }
 
@@ -529,6 +531,16 @@
       transform: translate(-50%, 0);
     }
 
+    @media (max-height: 740px) {
+      .completion-photo { max-height: 49svh; }
+      .completion-summary { min-height: 205px; padding-top: 8px; padding-bottom: 10px; }
+      .completion-name { font-size: 25px; margin: 4px 0 6px; }
+      .success-pill { padding: 8px 18px; font-size: 15px; }
+      .streak-text { margin-top: 8px; font-size: 21px; }
+      .tomorrow-text { font-size: 11px; }
+      .vote-time { margin-top: 5px; padding-top: 5px; }
+    }
+
     @media (max-width: 480px) {
       .page { padding-left: 8px; padding-right: 8px; }
       .brand-logo { width: 104px; height: 104px; }
@@ -556,9 +568,10 @@
     }
 
     @media (max-height: 700px) {
-      .completion-card { min-height: calc(100svh - 8px); }
-      .completion-summary { padding-top: 6px; padding-bottom: 8px; }
-      .completion-name { font-size: 24px; margin-bottom: 6px; }
+      .completion-card { min-height: 0; }
+      .completion-photo { max-height: min(60svh, 520px); }
+      .completion-summary { padding-top: 10px; padding-bottom: 13px; min-height: 220px; }
+      .completion-name { font-size: 27px; margin-bottom: 8px; }
       .success-pill { padding-top: 7px; padding-bottom: 7px; }
       .streak-text { margin-top: 7px; font-size: 20px; }
       .tomorrow-text { font-size: 11px; }
@@ -940,7 +953,7 @@
 
       $('completionFinalist').textContent = `FINALIST ${String(candidateIndex + 1).padStart(2, '0')}`;
       $('completionName').textContent = candidate.name;
-      $('streakText').textContent = `${streakCount}日連続投票中！`;
+      $('streakText').textContent = `${streakCount}日連続投票ありがとう！`;
       $('voteTime').textContent = formatVoteTime(data?.voteTimestamp);
       $('shareText').textContent = shareText;
 
