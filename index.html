@@ -3,137 +3,246 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#8e292d">
+  <meta name="description" content="SEIJO MISS CONTEST 2026 公式毎日投票ページ。1日1回、あなたの1票でファイナリストを応援できます。">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SEIJO MISS CONTEST 2026 毎日投票">
+  <meta property="og:description" content="1日1回、あなたの1票でファイナリストを応援できます。">
+  <meta property="og:url" content="https://seijomisscon2026.github.io/seijo-miss-voto/">
+  <meta property="og:image" content="https://seijomisscon2026.github.io/seijo-miss-voto/assets/logo.jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="canonical" href="https://seijomisscon2026.github.io/seijo-miss-voto/">
+  <link rel="icon" href="./assets/logo.jpeg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="./assets/logo.jpeg">
+
   <title>SEIJO MISS CONTEST 2026 毎日投票</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
   <style>
     :root {
       --wine: #91272a;
-      --wine-dark: #64181d;
-      --gold: #d7ab52;
-      --pink: #f8e7e6;
+      --wine-deep: #65191d;
+      --wine-soft: #b86265;
+      --gold: #cda653;
+      --gold-light: #e9d6a7;
       --cream: #fffaf6;
-      --line: rgba(145,39,42,.18);
+      --blush: #f9ece9;
+      --paper: rgba(255,255,255,.94);
       --text: #432f2d;
-      --green: #47ad65;
+      --muted: #7b6966;
+      --line: rgba(145,39,42,.17);
+      --green: #43aa62;
+      --shadow: 0 16px 42px rgba(86,37,38,.10);
+      --radius: 26px;
     }
 
     * { box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
+      min-height: 100svh;
       color: var(--text);
       background:
-        radial-gradient(circle at 15% 8%, rgba(243,207,201,.46), transparent 28%),
-        linear-gradient(180deg, #fffaf7 0%, #fcedea 100%);
+        radial-gradient(circle at 12% 5%, rgba(239,194,190,.42), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(235,211,165,.22), transparent 28%),
+        linear-gradient(180deg, #fffaf8 0%, #f8e9e6 100%);
       font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+      -webkit-text-size-adjust: 100%;
     }
 
-    button { font: inherit; }
+    button, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    img { -webkit-user-drag: none; }
 
     .page {
-      width: min(100%, 760px);
+      width: min(100%, 720px);
       margin: 0 auto;
-      padding: 22px 18px 48px;
+      padding: max(18px, env(safe-area-inset-top)) 14px calc(42px + env(safe-area-inset-bottom));
     }
 
-    .logo {
-      width: 132px;
-      height: 132px;
+    .brand-logo {
       display: block;
-      margin: 4px auto 22px;
-      object-fit: cover;
+      width: 118px;
+      height: 118px;
+      margin: 2px auto 18px;
       border-radius: 25px;
-      box-shadow: 0 12px 28px rgba(95,25,29,.18);
+      object-fit: cover;
+      box-shadow: 0 12px 30px rgba(94,28,32,.17);
     }
 
     .panel {
-      background: rgba(255,255,255,.82);
       border: 1px solid var(--line);
-      border-radius: 28px;
-      box-shadow: 0 14px 35px rgba(92,44,43,.08);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
       overflow: hidden;
-      margin-bottom: 20px;
     }
 
+    .hidden { display: none !important; }
+
+    .vote-panel { padding-bottom: 18px; }
+
     .intro {
-      padding: 28px 22px;
+      padding: 28px 20px 15px;
       text-align: center;
     }
 
-    .intro h1 {
-      margin: 0 0 10px;
-      color: var(--wine);
-      font-size: clamp(30px, 7vw, 48px);
-      letter-spacing: .08em;
+    .eyebrow {
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: .19em;
+      margin-bottom: 7px;
     }
 
-    .intro p { margin: 0; font-size: 16px; }
+    .intro h1 {
+      margin: 0;
+      color: var(--wine);
+      font-size: clamp(31px, 8vw, 46px);
+      line-height: 1.25;
+      letter-spacing: .06em;
+    }
 
-    .status {
+    .intro p {
+      margin: 9px 0 0;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .status-box {
+      margin: 16px 18px 17px;
+      min-height: 64px;
+      padding: 15px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
       white-space: pre-line;
-      margin: 22px 0;
-      padding: 18px;
+      text-align: center;
+      line-height: 1.65;
+      color: var(--wine-deep);
       border: 1px solid var(--line);
-      border-radius: 20px;
-      color: var(--wine-dark);
-      background: rgba(255,252,248,.9);
-      line-height: 1.8;
+      border-radius: 18px;
+      background: rgba(255,252,249,.88);
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      border: 2px solid rgba(145,39,42,.18);
+      border-top-color: var(--wine);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .retry-button {
+      margin: 0 auto 17px;
+      padding: 10px 18px;
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--wine);
+      background: #fff;
+      font-weight: 700;
     }
 
     .candidate-list {
       display: grid;
-      gap: 14px;
-      padding: 0 18px 22px;
+      gap: 13px;
+      padding: 0 15px 16px;
     }
 
     .candidate-card {
       width: 100%;
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 22px;
-      padding: 12px;
+      min-height: 126px;
+      padding: 11px;
       display: grid;
-      grid-template-columns: 92px 1fr 32px;
+      grid-template-columns: 88px minmax(0,1fr) 30px;
       align-items: center;
-      gap: 14px;
+      gap: 13px;
       text-align: left;
       color: var(--text);
-      transition: .2s ease;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background:
+        linear-gradient(120deg, rgba(255,255,255,.98), rgba(255,250,248,.91));
+      box-shadow: 0 9px 24px rgba(96,48,48,.055);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
     }
 
-    .candidate-card:disabled { opacity: .62; }
+    .candidate-card:active { transform: scale(.992); }
+
+    .candidate-card:disabled {
+      cursor: default;
+      opacity: .58;
+    }
+
     .candidate-card.selected {
-      border-color: var(--wine);
-      box-shadow: 0 0 0 3px rgba(145,39,42,.10);
+      border-color: rgba(145,39,42,.72);
+      background:
+        radial-gradient(circle at 90% 12%, rgba(216,174,84,.14), transparent 30%),
+        linear-gradient(120deg, #fff, #fff7f5);
+      box-shadow: 0 12px 30px rgba(113,31,35,.13), inset 0 0 0 2px rgba(145,39,42,.06);
       transform: translateY(-1px);
     }
 
-    .candidate-card img {
-      width: 92px;
-      height: 112px;
+    .profile-frame {
+      width: 88px;
+      height: 104px;
+      border-radius: 17px;
+      overflow: hidden;
+      background: #f7f0ed;
+      box-shadow: inset 0 0 0 1px rgba(145,39,42,.07);
+    }
+
+    .profile-frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
       object-fit: cover;
-      border-radius: 16px;
+      object-position: center top;
     }
 
     .candidate-number {
       color: var(--gold);
-      letter-spacing: .15em;
-      font-size: 12px;
-      margin-bottom: 6px;
+      font-size: 11px;
+      letter-spacing: .16em;
+      margin-bottom: 7px;
     }
 
     .candidate-name {
-      color: var(--wine-dark);
-      font-size: 24px;
+      color: var(--wine-deep);
+      font-size: clamp(21px, 6vw, 27px);
       font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .candidate-message {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
     }
 
     .radio {
-      width: 27px;
-      height: 27px;
-      border: 2px solid rgba(145,39,42,.35);
-      border-radius: 50%;
+      width: 28px;
+      height: 28px;
       position: relative;
+      border: 2px solid rgba(145,39,42,.32);
+      border-radius: 50%;
+      background: #fff;
+      transition: .18s ease;
+    }
+
+    .selected .radio {
+      border-color: var(--wine);
+      box-shadow: 0 0 0 4px rgba(145,39,42,.08);
     }
 
     .selected .radio::after {
@@ -144,42 +253,51 @@
       background: var(--wine);
     }
 
-    .submit {
-      width: calc(100% - 36px);
-      margin: 0 18px 24px;
-      padding: 17px;
+    .vote-action {
+      position: sticky;
+      bottom: max(8px, env(safe-area-inset-bottom));
+      z-index: 5;
+      margin: 0 14px 5px;
+      padding: 8px;
+      border: 1px solid rgba(145,39,42,.10);
+      border-radius: 999px;
+      background: rgba(255,250,247,.90);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .submit-button {
+      width: 100%;
+      min-height: 55px;
       border: 0;
       border-radius: 999px;
       color: #fff;
-      background: linear-gradient(135deg, #a4383c, #711b20);
+      background: linear-gradient(135deg, #a63b40 0%, #711b20 100%);
+      box-shadow: 0 12px 25px rgba(112,27,32,.22);
+      font-size: 17px;
       font-weight: 700;
-      font-size: 18px;
-      box-shadow: 0 12px 26px rgba(118,28,32,.23);
+      letter-spacing: .03em;
+      cursor: pointer;
+      transition: transform .18s ease, opacity .18s ease;
     }
 
-    .submit:disabled { opacity: .45; }
+    .submit-button:active:not(:disabled) { transform: scale(.985); }
+    .submit-button:disabled { opacity: .44; cursor: default; box-shadow: none; }
 
-    .note {
-      color: #7f6e6b;
+    .vote-note {
+      margin: 15px 16px 0;
+      color: var(--muted);
       text-align: center;
-      font-size: 13px;
-      line-height: 1.8;
-      padding: 0 16px 8px;
+      font-size: 11px;
+      line-height: 1.75;
     }
 
-    .hidden { display: none !important; }
+    /* Completion: original image, no crop, no distortion, screenshot-first. */
+    body.completion-mode .brand-logo { display: none; }
+    body.completion-mode .page { padding-top: max(6px, env(safe-area-inset-top)); }
 
-    /* 投票完了画面：1画面スクショを最優先 */
-    body.completion-mode .logo {
-      display: none;
-    }
-
-    body.completion-mode .page {
-      padding-top: 8px;
-    }
-
-    .completion {
-      animation: reveal .35s ease both;
+    .completion-view {
+      animation: reveal .36s ease both;
     }
 
     @keyframes reveal {
@@ -187,279 +305,540 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .completion-main {
-      overflow: hidden;
-      margin-bottom: 12px;
-      background: rgba(255,255,255,.92);
+    .completion-card {
+      position: relative;
+      min-height: calc(100svh - 12px);
+      display: grid;
+      grid-template-rows: minmax(0,1fr) auto;
+      background: rgba(255,255,255,.96);
     }
 
-    .completion-photo-wrap {
-      background: #fff;
-      border-bottom: 1px solid rgba(145,39,42,.10);
+    .completion-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.55);
+    }
+
+    .completion-media {
+      min-height: 0;
+      padding: 8px 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 30%, #fff 0%, #fff 46%, #fbf3f1 100%);
     }
 
     .completion-photo {
       display: block;
-      width: 100%;
-      height: min(55svh, 500px);
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       object-position: center;
-      background: #fff;
+      border-radius: 17px 17px 8px 8px;
+      opacity: 0;
+      transition: opacity .24s ease;
+    }
+
+    .completion-photo.loaded { opacity: 1; }
+
+    .photo-loader {
+      position: absolute;
+      top: 24%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      color: var(--wine);
+      font-size: 12px;
+      letter-spacing: .08em;
     }
 
     .completion-summary {
-      padding: 9px 16px 14px;
+      position: relative;
+      padding: 9px 13px 13px;
       text-align: center;
+      border-top: 1px solid rgba(145,39,42,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(255,251,248,.98));
     }
 
-    .identity-line {
+    .identity-row {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 9px;
+      gap: 7px;
       flex-wrap: wrap;
-      color: var(--gold);
-      letter-spacing: .09em;
-      line-height: 1.2;
-    }
-
-    .identity-line .contest {
-      color: var(--wine);
       font-size: 10px;
+      line-height: 1.2;
+      letter-spacing: .10em;
     }
 
-    .identity-line .separator {
-      color: rgba(145,39,42,.32);
-    }
-
-    .identity-line .finalist {
-      font-size: 11px;
-    }
+    .contest-label { color: var(--wine); }
+    .identity-divider { color: rgba(145,39,42,.28); }
+    .finalist-label { color: var(--gold); }
 
     .completion-name {
-      color: var(--wine-dark);
-      font-size: clamp(25px, 7vw, 34px);
+      margin: 4px 0 8px;
+      color: var(--wine-deep);
+      font-size: clamp(25px, 7.2vw, 34px);
       line-height: 1.05;
-      margin: 5px 0 9px;
     }
 
-    .completion-complete {
+    .success-pill {
       display: inline-flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       gap: 7px;
-      padding: 9px 19px;
-      border-radius: 999px;
+      padding: 8px 18px;
       color: #fff;
-      background: linear-gradient(135deg, #55bd73, #399b57);
-      font-size: 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #55bd73, #379954);
+      box-shadow: 0 8px 17px rgba(46,146,77,.15);
+      font-size: 15px;
       font-weight: 700;
-      box-shadow: 0 7px 16px rgba(46,146,77,.15);
     }
 
-    .streak {
+    .check-mark {
+      width: 19px;
+      height: 19px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid rgba(255,255,255,.9);
+      border-radius: 50%;
+      font-family: sans-serif;
+      font-size: 12px;
+    }
+
+    .streak-text {
+      margin: 9px 0 3px;
       color: var(--wine);
-      font-size: clamp(20px, 5.5vw, 27px);
-      line-height: 1.15;
-      margin: 10px 0 4px;
+      font-size: clamp(20px, 5.6vw, 27px);
+      line-height: 1.16;
     }
 
-    .tomorrow {
+    .tomorrow-text {
       margin: 0;
-      font-size: 13px;
-      line-height: 1.35;
+      font-size: 12px;
+      line-height: 1.4;
     }
 
     .vote-time {
-      margin-top: 8px;
+      margin-top: 7px;
       padding-top: 7px;
-      border-top: 1px dashed rgba(213,168,78,.58);
-      color: #746461;
-      font-size: 10px;
+      color: var(--muted);
+      border-top: 1px dashed rgba(205,166,83,.58);
+      font-size: 9.5px;
       line-height: 1.25;
     }
 
-    /* シェア部分はスクロール後に表示 */
-    .share-card {
-      padding: 25px 18px;
+    .share-section {
+      margin-top: 14px;
+      padding: 23px 16px 20px;
       text-align: center;
-      margin-top: 0;
     }
 
-    .share-card h3 {
+    .share-section h3 {
+      margin: 0;
       color: var(--wine);
-      margin: 0 0 18px;
-      font-size: 22px;
+      font-size: 21px;
+      line-height: 1.4;
+    }
+
+    .share-hint {
+      margin: 6px 0 16px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
     }
 
     .share-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
+      gap: 8px;
     }
 
     .share-button {
+      min-height: 58px;
+      padding: 11px 7px;
       border: 0;
-      border-radius: 16px;
-      padding: 14px 8px;
+      border-radius: 17px;
       color: #fff;
+      font-size: 12px;
       font-weight: 700;
-      min-height: 56px;
+      line-height: 1.25;
+      cursor: pointer;
+      transition: transform .17s ease, filter .17s ease;
     }
 
-    .share-x { background: #151515; }
-    .share-instagram { background: linear-gradient(135deg,#f8a13c,#dc397a,#7148c8); }
+    .share-button:active { transform: scale(.98); }
+    .share-button:hover { filter: brightness(1.03); }
+    .share-x { background: #121212; }
+    .share-instagram { background: linear-gradient(135deg,#f6a13b,#dc397a 50%,#7148c8); }
     .share-line { background: #12b84d; }
 
-    .share-label {
-      margin: 22px 0 10px;
-      color: #806c68;
-      font-size: 13px;
-    }
-
-    .share-text {
+    .share-copy {
+      margin-top: 15px;
+      padding: 14px;
       white-space: pre-line;
-      padding: 18px;
-      border: 1px solid rgba(213,168,78,.7);
-      border-radius: 18px;
+      border: 1px solid rgba(205,166,83,.62);
+      border-radius: 17px;
       background: #fffdfa;
-      line-height: 1.8;
+      font-size: 13px;
+      line-height: 1.75;
     }
 
     .copy-button {
-      margin-top: 12px;
+      margin-top: 10px;
+      padding: 10px 18px;
       border: 1px solid var(--line);
+      border-radius: 999px;
       color: var(--wine);
       background: #fff;
-      border-radius: 999px;
-      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      z-index: 50;
+      transform: translate(-50%, 16px);
+      width: min(calc(100% - 30px), 420px);
+      padding: 12px 15px;
+      color: #fff;
+      text-align: center;
+      border-radius: 14px;
+      background: rgba(58,38,38,.94);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: 0;
+      pointer-events: none;
+      transition: .22s ease;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
     }
 
     @media (max-width: 480px) {
-      .page { padding-left: 12px; padding-right: 12px; }
+      .page { padding-left: 8px; padding-right: 8px; }
+      .brand-logo { width: 104px; height: 104px; }
+      .intro { padding-left: 15px; padding-right: 15px; }
+      .candidate-list { padding-left: 9px; padding-right: 9px; }
       .candidate-card {
-        grid-template-columns: 76px 1fr 27px;
+        min-height: 118px;
+        grid-template-columns: 78px minmax(0,1fr) 27px;
         gap: 10px;
+        padding: 10px;
       }
-      .candidate-card img {
-        width: 76px;
-        height: 94px;
+      .profile-frame { width: 78px; height: 98px; }
+      .radio { width: 27px; height: 27px; }
+      .vote-action { margin-left: 8px; margin-right: 8px; }
+
+      body.completion-mode .page { padding-left: 5px; padding-right: 5px; }
+      .completion-card { border-radius: 21px; }
+      .completion-media {
+        min-height: 0;
+        padding: 6px 6px 0;
       }
-      .candidate-name { font-size: 20px; }
-      .share-button { font-size: 12px; }
-      body.completion-mode .page {
-        padding-left: 7px;
-        padding-right: 7px;
-      }
-      .completion-photo {
-        height: min(54svh, 470px);
-      }
-      .completion-main {
-        border-radius: 22px;
-      }
-      .completion-summary {
-        padding: 8px 12px 12px;
-      }
-      .identity-line {
-        gap: 7px;
-      }
-      .completion-complete {
-        font-size: 15px;
-        padding: 8px 17px;
-      }
-      .share-button {
-        font-size: 12px;
+      .completion-photo { max-height: 100%; }
+      .completion-summary { padding: 8px 10px 11px; }
+      .share-section { border-radius: 21px; }
+    }
+
+    @media (max-height: 700px) {
+      .completion-card { min-height: calc(100svh - 8px); }
+      .completion-summary { padding-top: 6px; padding-bottom: 8px; }
+      .completion-name { font-size: 24px; margin-bottom: 6px; }
+      .success-pill { padding-top: 7px; padding-bottom: 7px; }
+      .streak-text { margin-top: 7px; font-size: 20px; }
+      .tomorrow-text { font-size: 11px; }
+      .vote-time { margin-top: 5px; padding-top: 5px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
 </head>
 <body>
   <main class="page">
-    <img class="logo" src="./assets/logo.jpeg" alt="Story SEIJO MISS CONTEST 2026">
+    <img class="brand-logo" src="./assets/logo.jpeg?v=20260713-final" alt="Story SEIJO MISS CONTEST 2026">
 
-    <section id="votePanel" class="panel">
+    <section id="votePanel" class="panel vote-panel" aria-labelledby="voteTitle">
       <div class="intro">
-        <h1>毎日投票はこちら</h1>
-        <p>1日1回、あなたの1票で応援できます</p>
-        <div id="status" class="status">読み込み中...</div>
+        <div class="eyebrow">SEIJO MISS CONTEST 2026</div>
+        <h1 id="voteTitle">毎日投票はこちら</h1>
+        <p>1日1回、あなたの1票が<br>ファイナリストの大きな力になります</p>
       </div>
 
-      <div id="candidateList" class="candidate-list hidden"></div>
-      <button id="submitButton" class="submit hidden" disabled>このファイナリストに投票する</button>
-      <p class="note">投票期間：2026/7/4 12:00 ～ 2026/11/20 23:59<br>毎日0:00に投票回数がリセットされます。</p>
+      <div id="statusBox" class="status-box" role="status" aria-live="polite">
+        <span id="statusSpinner" class="spinner" aria-hidden="true"></span>
+        <span id="statusText">LINE認証を確認しています…</span>
+      </div>
+      <button id="retryButton" class="retry-button hidden" type="button">もう一度読み込む</button>
+
+      <div id="candidateList" class="candidate-list hidden" aria-label="ファイナリスト一覧"></div>
+
+      <div id="voteAction" class="vote-action hidden">
+        <button id="submitButton" class="submit-button" type="button" disabled>
+          応援する人を選んでください
+        </button>
+      </div>
+
+      <p class="vote-note">
+        投票期間：2026/7/4 12:00 ～ 2026/11/20 23:59<br>
+        毎日0:00に投票回数がリセットされます。
+      </p>
     </section>
 
-    <section id="completionView" class="completion hidden">
-      <article class="panel completion-main">
-        <div class="completion-photo-wrap">
+    <section id="completionView" class="completion-view hidden" aria-label="投票完了">
+      <article id="completionCard" class="panel completion-card">
+        <div class="completion-media">
+          <div id="photoLoader" class="photo-loader">メッセージ画像を読み込んでいます…</div>
           <img id="completionPhoto" class="completion-photo" alt="">
         </div>
 
         <div class="completion-summary">
-          <div class="identity-line">
-            <span class="contest">SEIJO MISS CONTEST 2026</span>
-            <span class="separator">│</span>
-            <span id="completionFinalist" class="finalist"></span>
+          <div class="identity-row">
+            <span class="contest-label">SEIJO MISS CONTEST 2026</span>
+            <span class="identity-divider" aria-hidden="true">│</span>
+            <span id="completionFinalist" class="finalist-label"></span>
           </div>
 
           <h2 id="completionName" class="completion-name"></h2>
 
-          <div class="completion-complete">✓ 投票が完了しました</div>
-          <h3 id="streakText" class="streak"></h3>
-          <p class="tomorrow">明日もこのページから投票できます</p>
+          <div class="success-pill">
+            <span class="check-mark" aria-hidden="true">✓</span>
+            <span>投票が完了しました</span>
+          </div>
+
+          <h3 id="streakText" class="streak-text"></h3>
+          <p class="tomorrow-text">明日もこのページから投票できます</p>
           <div id="voteTime" class="vote-time"></div>
         </div>
       </article>
 
-      <article class="panel share-card">
+      <article class="panel share-section">
         <h3>応援の気持ちをシェアしよう</h3>
+        <p class="share-hint">ここから下は、スクロールして使うシェアエリアです</p>
+
         <div class="share-grid">
-          <button id="shareX" class="share-button share-x">Xでシェア</button>
-          <button id="shareInstagram" class="share-button share-instagram">インスタでシェア</button>
-          <button id="shareLine" class="share-button share-line">LINEでシェア</button>
+          <button id="shareX" class="share-button share-x" type="button">Xで<br>シェア</button>
+          <button id="shareInstagram" class="share-button share-instagram" type="button">Instagramへ<br>共有</button>
+          <button id="shareLine" class="share-button share-line" type="button">LINEで<br>シェア</button>
         </div>
-        <div class="share-label">シェア文（コピーして使えます）</div>
-        <div id="shareText" class="share-text"></div>
-        <button id="copyButton" class="copy-button">シェア文をコピー</button>
+
+        <div id="shareText" class="share-copy"></div>
+        <button id="copyButton" class="copy-button" type="button">シェア文をコピー</button>
       </article>
     </section>
   </main>
 
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
   <script>
-    const LIFF_ID = '2010561104-dKFoBUJn';
+    'use strict';
 
-    // 必ず現在使っているApps ScriptのウェブアプリURLに変更
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyjFqEqd70yBJ62gL95fL9FLsAsxa0oNJlYN2MgCVzU9JzXZxexKnKLg-eWRhk0gk8nCg/exec';
+    const APP = Object.freeze({
+      LIFF_ID: '2010561104-dKFoBUJn',
+      API_URL: 'https://script.google.com/macros/s/AKfycbyjFqEqd70yBJ62gL95fL9FLsAsxa0oNJlYN2MgCVzU9JzXZxexKnKLg-eWRhk0gk8nCg/exec',
+      SHARE_URL: 'https://liff.line.me/2010561104-dKFoBUJn',
+      ASSET_VERSION: '20260713-final',
+      MAX_RETRIES: 3,
+      REQUEST_TIMEOUT_MS: 45000,
+    });
 
-    const CANDIDATES = [
+    const CANDIDATES = Object.freeze([
       { id: '01', name: '池端美悠', photoCount: 3 },
       { id: '02', name: '河端すみれ', photoCount: 3 },
       { id: '03', name: '坂本七海', photoCount: 3 },
       { id: '04', name: '小谷美羽', photoCount: 3 },
       { id: '05', name: '柳川円佳', photoCount: 2 },
-    ];
+    ]);
 
-    let idToken = '';
-    let selectedCandidateId = '';
-    let votingEnabled = false;
-    let completionData = null;
+    const state = {
+      idToken: '',
+      selectedCandidateId: '',
+      votingEnabled: false,
+      submitting: false,
+      completion: null,
+      toastTimer: null,
+    };
 
     const $ = id => document.getElementById(id);
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-    function setStatus(message) {
-      $('status').textContent = message;
+    function setStatus(message, { loading = false, error = false } = {}) {
+      $('statusText').textContent = message;
+      $('statusSpinner').classList.toggle('hidden', !loading);
+      $('statusBox').style.color = error ? '#8b2026' : '';
+      $('retryButton').classList.toggle('hidden', !error);
     }
 
-    function jsonpOnce(action, params = {}, timeoutMs = 45000) {
+    function showToast(message, duration = 2400) {
+      const toast = $('toast');
+      toast.textContent = message;
+      toast.classList.add('visible');
+      clearTimeout(state.toastTimer);
+      state.toastTimer = setTimeout(() => toast.classList.remove('visible'), duration);
+    }
+
+    function safeCandidate(candidateId) {
+      return CANDIDATES.find(item => item.id === String(candidateId || '')) || null;
+    }
+
+    function safePhotoKey(candidateId, photoKey) {
+      const candidate = safeCandidate(candidateId);
+      if (!candidate) return '01_1';
+
+      const match = String(photoKey || '').match(/^(0[1-5])_([1-3])$/);
+      if (!match || match[1] !== candidate.id) return `${candidate.id}_1`;
+
+      const number = Number(match[2]);
+      return number >= 1 && number <= candidate.photoCount
+        ? `${candidate.id}_${number}`
+        : `${candidate.id}_1`;
+    }
+
+    function buildShareText(candidateName) {
+      return `成城ミスコン2026で${candidateName}さんを応援中！\n毎日投票で応援しています✨\n#成城ミスコン2026`;
+    }
+
+    function imageUrl(path) {
+      return `${path}?v=${encodeURIComponent(APP.ASSET_VERSION)}`;
+    }
+
+    function createCandidateCard(candidate, index) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'candidate-card';
+      button.dataset.id = candidate.id;
+      button.disabled = !state.votingEnabled;
+      button.setAttribute('aria-pressed', 'false');
+      button.setAttribute('aria-label', `${candidate.name}さんを選択`);
+
+      const frame = document.createElement('div');
+      frame.className = 'profile-frame';
+
+      const image = document.createElement('img');
+      image.src = imageUrl(`./assets/profile/${candidate.id}.jpeg`);
+      image.alt = `${candidate.name} 宣材写真`;
+      image.loading = index < 2 ? 'eager' : 'lazy';
+      image.decoding = 'async';
+      image.addEventListener('error', () => {
+        image.src = imageUrl('./assets/logo.jpeg');
+        image.alt = `${candidate.name} 画像を読み込めませんでした`;
+      }, { once: true });
+      frame.appendChild(image);
+
+      const info = document.createElement('div');
+      const number = document.createElement('div');
+      number.className = 'candidate-number';
+      number.textContent = `FINALIST ${String(index + 1).padStart(2, '0')}`;
+
+      const name = document.createElement('div');
+      name.className = 'candidate-name';
+      name.textContent = candidate.name;
+
+      const message = document.createElement('div');
+      message.className = 'candidate-message';
+      message.textContent = 'タップして選択';
+
+      info.append(number, name, message);
+
+      const radio = document.createElement('span');
+      radio.className = 'radio';
+      radio.setAttribute('aria-hidden', 'true');
+
+      button.append(frame, info, radio);
+      button.addEventListener('click', () => selectCandidate(candidate.id));
+      return button;
+    }
+
+    function renderCandidates(candidates = CANDIDATES) {
+      const list = $('candidateList');
+      list.replaceChildren();
+      candidates.forEach((candidate, index) => {
+        list.appendChild(createCandidateCard(candidate, index));
+      });
+    }
+
+    function setCandidateCardsDisabled(disabled) {
+      document.querySelectorAll('.candidate-card').forEach(card => {
+        card.disabled = disabled;
+      });
+    }
+
+    function selectCandidate(candidateId) {
+      if (!state.votingEnabled || state.submitting) return;
+      state.selectedCandidateId = candidateId;
+
+      document.querySelectorAll('.candidate-card').forEach(card => {
+        const selected = card.dataset.id === candidateId;
+        card.classList.toggle('selected', selected);
+        card.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        const hint = card.querySelector('.candidate-message');
+        if (hint) hint.textContent = selected ? 'この方に投票します' : 'タップして選択';
+      });
+
+      const candidate = safeCandidate(candidateId);
+      $('submitButton').disabled = false;
+      $('submitButton').textContent = `${candidate ? candidate.name : '選択した方'}さんに投票する`;
+    }
+
+    function jsonpOnce(action, params = {}, timeoutMs = APP.REQUEST_TIMEOUT_MS) {
       return new Promise((resolve, reject) => {
-        if (!API_URL || API_URL.includes('PASTE_CURRENT')) {
-          reject(new Error('index.htmlのAPI_URLを設定してください。'));
+        if (!APP.API_URL.startsWith('https://script.google.com/macros/s/')) {
+          reject(new Error('投票システムの接続先が設定されていません。'));
           return;
         }
 
-        const callbackName = `seijoCb_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const callbackName = `seijoCallback_${Date.now()}_${Math.random().toString(36).slice(2)}`;
         const script = document.createElement('script');
+        let settled = false;
+
+        const cleanup = () => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          try { delete window[callbackName]; } catch (_) { window[callbackName] = undefined; }
+          script.remove();
+        };
+
+        const timer = setTimeout(() => {
+          cleanup();
+          reject(new Error('投票システムとの通信がタイムアウトしました。'));
+        }, timeoutMs);
+
+        window[callbackName] = payload => {
+          cleanup();
+          if (!payload || payload.ok === false) {
+            reject(new Error(payload?.error || '投票システムから正しい応答を受け取れませんでした。'));
+            return;
+          }
+          resolve(payload);
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error('投票システムとの通信に失敗しました。'));
+        };
+
         const query = new URLSearchParams({
           action,
           callback: callbackName,
@@ -467,218 +846,240 @@
           ...params,
         });
 
-        const cleanup = () => {
-          clearTimeout(timer);
-          try { delete window[callbackName]; } catch (_) {}
-          script.remove();
-        };
-
-        const timer = setTimeout(() => {
-          cleanup();
-          reject(new Error('Apps Scriptとの通信がタイムアウトしました。'));
-        }, timeoutMs);
-
-        window[callbackName] = data => {
-          cleanup();
-          if (data && data.ok === false) {
-            reject(new Error(data.error || '通信エラー'));
-            return;
-          }
-          resolve(data);
-        };
-
-        script.onerror = () => {
-          cleanup();
-          reject(new Error('Apps Scriptとの通信に失敗しました。'));
-        };
-
-        script.src = `${API_URL}?${query.toString()}`;
+        script.src = `${APP.API_URL}?${query.toString()}`;
         document.body.appendChild(script);
       });
     }
 
     async function jsonp(action, params = {}, label = '通信') {
-      let lastError;
+      let lastError = null;
 
-      for (let attempt = 1; attempt <= 3; attempt++) {
+      for (let attempt = 1; attempt <= APP.MAX_RETRIES; attempt += 1) {
         try {
           if (attempt > 1) {
-            setStatus(`${label}に時間がかかっています。再試行しています…（${attempt}/3）`);
+            setStatus(`${label}に時間がかかっています。\n自動で再試行しています（${attempt}/${APP.MAX_RETRIES}）`, { loading: true });
           }
           return await jsonpOnce(action, params);
         } catch (error) {
           lastError = error;
-          if (attempt < 3) await sleep(1200 * attempt);
+          if (attempt < APP.MAX_RETRIES) await sleep(1000 * attempt);
         }
       }
 
       throw lastError || new Error(`${label}に失敗しました。`);
     }
 
-    function renderCandidates(candidates = CANDIDATES) {
-      const list = $('candidateList');
-      list.innerHTML = '';
+    async function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (_) {}
+      }
 
-      candidates.forEach((candidate, index) => {
-        const button = document.createElement('button');
-        button.className = 'candidate-card';
-        button.type = 'button';
-        button.disabled = !votingEnabled;
-        button.dataset.id = candidate.id;
-
-        button.innerHTML = `
-          <img src="./assets/candidates/${candidate.id}.jpeg" alt="${candidate.name}">
-          <div>
-            <div class="candidate-number">FINALIST ${String(index + 1).padStart(2, '0')}</div>
-            <div class="candidate-name">${candidate.name}</div>
-          </div>
-          <div class="radio"></div>
-        `;
-
-        button.addEventListener('click', () => {
-          if (!votingEnabled) return;
-
-          selectedCandidateId = candidate.id;
-          document.querySelectorAll('.candidate-card').forEach(card => {
-            card.classList.toggle('selected', card.dataset.id === candidate.id);
-          });
-          $('submitButton').disabled = false;
-        });
-
-        list.appendChild(button);
-      });
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      textarea.style.pointerEvents = 'none';
+      document.body.appendChild(textarea);
+      textarea.select();
+      textarea.setSelectionRange(0, textarea.value.length);
+      const copied = document.execCommand('copy');
+      textarea.remove();
+      return copied;
     }
 
-    function buildShareText(candidateName) {
-      return `成城ミスコン2026で${candidateName}さんを応援中！\n毎日投票で応援しています✨\n#成城ミスコン2026`;
+    function formatVoteTime(value) {
+      const stringValue = String(value || '').trim();
+      if (!stringValue) return '最終投票日時：確認できませんでした';
+      return `最終投票日時：${stringValue.replace(/-/g, '/')}`;
+    }
+
+    function loadCompletionImage(src, alt) {
+      const image = $('completionPhoto');
+      const loader = $('photoLoader');
+      image.classList.remove('loaded');
+      loader.classList.remove('hidden');
+      image.alt = alt;
+
+      image.onload = () => {
+        loader.classList.add('hidden');
+        image.classList.add('loaded');
+      };
+
+      image.onerror = () => {
+        loader.textContent = '画像を読み込めませんでした。画面を再読み込みしてください。';
+        image.classList.remove('loaded');
+      };
+
+      image.src = imageUrl(src);
     }
 
     function showCompletion(data) {
-      completionData = data;
-      document.body.classList.add('completion-mode');
-      const candidateIndex = CANDIDATES.findIndex(item => item.id === data.candidateId);
-      const shareText = buildShareText(data.candidateName);
+      const candidate = safeCandidate(data?.candidateId);
+      if (!candidate) throw new Error('投票済み候補者の情報を確認できませんでした。');
 
+      const photoKey = safePhotoKey(candidate.id, data?.photoKey);
+      const candidateIndex = CANDIDATES.findIndex(item => item.id === candidate.id);
+      const streakCount = Math.max(1, Number(data?.streakCount) || 1);
+      const shareText = buildShareText(candidate.name);
+
+      state.completion = {
+        candidateId: candidate.id,
+        candidateName: candidate.name,
+        photoKey,
+        streakCount,
+        voteTimestamp: data?.voteTimestamp || '',
+      };
+
+      document.body.classList.add('completion-mode');
       $('votePanel').classList.add('hidden');
       $('completionView').classList.remove('hidden');
 
-      $('completionPhoto').src = `./assets/completion/${data.photoKey}.jpeg`;
-      $('completionPhoto').alt = `${data.candidateName} 投票完了メッセージ`;
       $('completionFinalist').textContent = `FINALIST ${String(candidateIndex + 1).padStart(2, '0')}`;
-      $('completionName').textContent = data.candidateName;
-      $('streakText').textContent = `${data.streakCount}日連続投票ありがとう！`;
-      $('voteTime').textContent = `最終投票日時：${String(data.voteTimestamp || '').replaceAll('-', '/')}`;
+      $('completionName').textContent = candidate.name;
+      $('streakText').textContent = `${streakCount}日連続投票ありがとう！`;
+      $('voteTime').textContent = formatVoteTime(data?.voteTimestamp);
       $('shareText').textContent = shareText;
 
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      loadCompletionImage(
+        `./assets/completion/${photoKey}.jpeg`,
+        `${candidate.name}さんからの投票完了メッセージ`
+      );
+
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
 
-    async function copyShareText() {
-      const text = buildShareText(completionData.candidateName);
-      await navigator.clipboard.writeText(text);
-      $('copyButton').textContent = 'コピーしました！';
-      setTimeout(() => $('copyButton').textContent = 'シェア文をコピー', 1800);
-    }
+    async function submitVote() {
+      if (!state.selectedCandidateId || !state.votingEnabled || state.submitting) return;
 
-    $('copyButton').addEventListener('click', copyShareText);
-
-    $('shareX').addEventListener('click', () => {
-      const text = buildShareText(completionData.candidateName);
-      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
-      location.href = url;
-    });
-
-    $('shareLine').addEventListener('click', () => {
-      const text = `${buildShareText(completionData.candidateName)}\n${location.href}`;
-      location.href = `https://line.me/R/share?text=${encodeURIComponent(text)}`;
-    });
-
-    $('shareInstagram').addEventListener('click', async () => {
-      const text = buildShareText(completionData.candidateName);
-
-      try {
-        await navigator.clipboard.writeText(text);
-
-        if (navigator.share) {
-          await navigator.share({
-            title: '成城ミスコン2026',
-            text,
-            url: location.href,
-          });
-        } else {
-          alert('シェア文をコピーしました。Instagramを開いて貼り付けてください。');
-          location.href = 'https://www.instagram.com/';
-        }
-      } catch (error) {
-        if (error && error.name === 'AbortError') return;
-        alert('シェア文をコピーしました。Instagramで貼り付けてください。');
-      }
-    });
-
-    $('submitButton').addEventListener('click', async () => {
-      if (!selectedCandidateId || !votingEnabled) return;
-
+      state.submitting = true;
+      setCandidateCardsDisabled(true);
       $('submitButton').disabled = true;
       $('submitButton').textContent = '投票を送信しています…';
+      setStatus('あなたの1票を送信しています…', { loading: true });
 
       try {
         const response = await jsonp('submit', {
-          idToken,
-          candidateId: selectedCandidateId,
+          idToken: state.idToken,
+          candidateId: state.selectedCandidateId,
           userAgent: navigator.userAgent,
         }, '投票送信');
 
+        if (!response.completion) throw new Error('投票完了情報を取得できませんでした。');
         showCompletion(response.completion);
       } catch (error) {
+        state.submitting = false;
+        setCandidateCardsDisabled(false);
         $('submitButton').disabled = false;
-        $('submitButton').textContent = 'このファイナリストに投票する';
-        setStatus(error.message || '投票に失敗しました。');
+        const candidate = safeCandidate(state.selectedCandidateId);
+        $('submitButton').textContent = `${candidate?.name || '選択した方'}さんに投票する`;
+        setStatus(`${error.message || '投票に失敗しました。'}\n時間をおいて、もう一度お試しください。`, { error: true });
       }
-    });
+    }
+
+    async function shareToInstagram() {
+      if (!state.completion) return;
+      const text = buildShareText(state.completion.candidateName);
+      await copyText(text);
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: '成城ミスコン2026',
+            text,
+            url: APP.SHARE_URL,
+          });
+          return;
+        } catch (error) {
+          if (error?.name === 'AbortError') {
+            showToast('シェア文はコピー済みです');
+            return;
+          }
+        }
+      }
+
+      showToast('シェア文をコピーしました。Instagramに貼り付けてください', 3200);
+    }
 
     async function initialize() {
       try {
-        setStatus('LINE認証を確認しています…');
-
-        await liff.init({ liffId: LIFF_ID });
+        setStatus('LINE認証を確認しています…', { loading: true });
+        await liff.init({ liffId: APP.LIFF_ID });
 
         if (!liff.isLoggedIn()) {
-          liff.login({ redirectUri: location.href });
+          liff.login({ redirectUri: window.location.href });
           return;
         }
 
-        idToken = liff.getIDToken();
-        if (!idToken) throw new Error('LINE認証情報を取得できませんでした。');
+        state.idToken = liff.getIDToken() || '';
+        if (!state.idToken) {
+          throw new Error('LINE認証情報を取得できませんでした。LINEアプリ内から開き直してください。');
+        }
 
-        setStatus('本日の投票状況を確認しています…');
-        const response = await jsonp('status', { idToken }, '投票状況確認');
+        setStatus('本日の投票状況を確認しています…', { loading: true });
+        const response = await jsonp('status', { idToken: state.idToken }, '投票状況確認');
 
         if (response.alreadyVoted && response.completion) {
           showCompletion(response.completion);
           return;
         }
 
-        const candidates = response.config?.candidates || CANDIDATES;
-        renderCandidates(candidates);
-
-        $('candidateList').classList.remove('hidden');
-        $('submitButton').classList.remove('hidden');
+        const candidates = Array.isArray(response.config?.candidates)
+          ? response.config.candidates
+          : CANDIDATES;
 
         if (response.periodStatus === 'before') {
-          setStatus('投票開始前です。\n2026/7/4 12:00から投票できます。');
-          votingEnabled = false;
-        } else if (response.periodStatus === 'ended') {
-          setStatus('投票期間は終了しました。');
-          votingEnabled = false;
-        } else {
-          votingEnabled = true;
-          setStatus('応援したいファイナリストを1人選んでください。');
+          state.votingEnabled = false;
           renderCandidates(candidates);
+          $('candidateList').classList.remove('hidden');
+          setStatus('投票開始前です。\n2026/7/4 12:00から投票できます。');
+          return;
         }
+
+        if (response.periodStatus === 'ended') {
+          state.votingEnabled = false;
+          renderCandidates(candidates);
+          $('candidateList').classList.remove('hidden');
+          setStatus('投票期間は終了しました。');
+          return;
+        }
+
+        state.votingEnabled = true;
+        renderCandidates(candidates);
+        $('candidateList').classList.remove('hidden');
+        $('voteAction').classList.remove('hidden');
+        setStatus('応援したいファイナリストを1人選んでください。');
       } catch (error) {
-        setStatus(error.message || 'ページの読み込みに失敗しました。');
+        setStatus(`${error.message || 'ページの読み込みに失敗しました。'}\n通信環境を確認して、もう一度お試しください。`, { error: true });
       }
     }
+
+    $('submitButton').addEventListener('click', submitVote);
+    $('retryButton').addEventListener('click', () => window.location.reload());
+
+    $('shareX').addEventListener('click', () => {
+      if (!state.completion) return;
+      const text = buildShareText(state.completion.candidateName);
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(APP.SHARE_URL)}`;
+      window.location.href = url;
+    });
+
+    $('shareLine').addEventListener('click', () => {
+      if (!state.completion) return;
+      const text = `${buildShareText(state.completion.candidateName)}\n${APP.SHARE_URL}`;
+      window.location.href = `https://line.me/R/share?text=${encodeURIComponent(text)}`;
+    });
+
+    $('shareInstagram').addEventListener('click', shareToInstagram);
+
+    $('copyButton').addEventListener('click', async () => {
+      if (!state.completion) return;
+      const copied = await copyText(buildShareText(state.completion.candidateName));
+      showToast(copied ? 'シェア文をコピーしました' : 'コピーできませんでした。長押しでコピーしてください');
+    });
 
     initialize();
   </script>
