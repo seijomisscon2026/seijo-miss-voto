@@ -568,6 +568,9 @@ img {
 
 .candidate-info {
   min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: 8px;
 }
 
 .candidate-chapter {
@@ -578,28 +581,13 @@ img {
   letter-spacing: .17em;
 }
 
-.nameplate-wrap {
-  height: 50px;
-  margin: 4px 0 3px;
-  display: flex;
-  align-items: center;
-}
-
-.candidate-nameplate {
-  width: auto;
-  max-width: 100%;
-  max-height: 47px;
-  display: block;
-  object-fit: contain;
-  object-position: left center;
-}
-
 .candidate-name {
-  margin: 2px 0;
+  margin: 0;
   color: var(--wine-800);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
   line-height: 1.2;
+  letter-spacing: .08em;
 }
 
 .candidate-hint {
@@ -1181,16 +1169,8 @@ body.completion-mode .hero h1 {
     height: 132px;
   }
 
-  .nameplate-wrap {
-    height: 60px;
-  }
-
-  .candidate-nameplate {
-    max-height: 57px;
-  }
-
   .candidate-name {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   .reward-item {

@@ -229,24 +229,13 @@
     chapter.className = 'candidate-chapter';
     chapter.textContent = `FINALIST STORY ${String(index + 1).padStart(2, '0')}`;
 
-    const nameplateWrap = document.createElement('div');
-    nameplateWrap.className = 'nameplate-wrap';
-    const nameplate = document.createElement('img');
-    nameplate.className = 'candidate-nameplate';
-    nameplate.src = imageUrl(candidate.nameplate || `./assets/nameplates/${candidate.id}.png`);
-    nameplate.alt = '';
-    nameplate.loading = index < 2 ? 'eager' : 'lazy';
-    nameplate.decoding = 'async';
-    nameplate.addEventListener('error', () => nameplateWrap.classList.add('hidden'), { once: true });
-    nameplateWrap.appendChild(nameplate);
-
     const name = document.createElement('div');
     name.className = 'candidate-name';
     name.textContent = candidate.name;
     const hint = document.createElement('div');
     hint.className = 'candidate-hint';
     hint.textContent = 'タップして、この物語を応援';
-    info.append(chapter, nameplateWrap, name, hint);
+    info.append(chapter, name, hint);
 
     const mark = document.createElement('span');
     mark.className = 'selection-mark';
