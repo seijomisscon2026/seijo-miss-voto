@@ -632,11 +632,8 @@
   }
 
   async function initialize() {
-    const previewParams = new URLSearchParams(window.location.search);
-    const isTemporaryProductionPreview = window.location.hostname === 'seijomisscon2026.github.io' &&
-      previewParams.get('previewToken') === 'wallpaper-qa-20260914';
-    const isLocalPreview = (['localhost', '127.0.0.1'].includes(window.location.hostname) ||
-      isTemporaryProductionPreview) && previewParams.has('preview');
+    const isLocalPreview = ['localhost', '127.0.0.1'].includes(window.location.hostname) &&
+      new URLSearchParams(window.location.search).has('preview');
     if (isLocalPreview) {
       const response = previewResponse();
       state.systemMode = 'story';
