@@ -70,6 +70,24 @@
     ) || null;
   }
 
+  function resolvedRewardAsset(reward, fallbackCandidateId = '') {
+    const asset = reward?.asset || {};
+    const candidateId = String(reward?.candidateId || fallbackCandidateId || '');
+    const candidate = safeCandidate(candidateId);
+    const url = asset.byCandidate?.[candidateId] || asset.url || '';
+    const extension = asset.type === 'image' ? '.jpeg' : '';
+    return {
+      ...asset,
+      available: Boolean(asset.available && url),
+      url,
+      candidateId,
+      candidateName: reward?.candidateName || candidate?.name || '',
+      downloadName: candidateId && asset.downloadName
+        ? `${asset.downloadName}-${candidateId}${extension}`
+        : asset.downloadName,
+    };
+  }
+
   function buildShareText(candidateName) {
     return `成城ミスコン2026「Story」で${candidateName}さんを応援中！\n` +
       `今日の一票が、次のChapterにつながります。\n#成城ミスコン2026 #SeijoStory`;
@@ -99,6 +117,8 @@
         ...reward,
         earned,
         earnedAt: backend?.earnedAt || '',
+        candidateId: backend?.candidateId ? String(backend.candidateId) : '',
+        candidateName: backend?.candidateName || '',
       };
     });
 
@@ -149,6 +169,7 @@
     const states = progress?.rewardStates || CONFIG.rewards.map(reward => ({ ...reward, earned: false }));
 
     states.forEach(reward => {
+      const asset = resolvedRewardAsset(reward);
       const item = document.createElement('article');
       item.className = `reward-item${reward.earned ? ' earned' : ''}`;
 
@@ -171,7 +192,7 @@
       const badge = document.createElement('span');
       badge.className = 'reward-badge';
       if (reward.earned) {
-        badge.textContent = reward.asset.available ? '獲得済み' : '獲得済み・準備中';
+        badge.textContent = asset.available ? '獲得済み' : '獲得済み・準備中';
       } else if (progress?.cumulativeCount === null) {
         badge.textContent = `${reward.threshold}回で解放`;
       } else {
@@ -183,15 +204,22 @@
       description.textContent = reward.description;
       copy.append(chapter, titleRow, description);
 
-      if (reward.earned && reward.asset.available && reward.asset.url) {
+      if (reward.earned && asset.candidateName) {
+        const candidateLabel = document.createElement('p');
+        candidateLabel.className = 'reward-candidate-label';
+        candidateLabel.textContent = `${asset.candidateName}さんの特典`;
+        copy.appendChild(candidateLabel);
+      }
+
+      if (reward.earned && asset.available) {
         const link = document.createElement('a');
         link.className = 'reward-asset-link';
-        link.href = reward.asset.url;
+        link.href = imageUrl(asset.url);
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
-        link.textContent = reward.asset.type === 'video' ? '動画を見る' : '特典を開く';
-        if (reward.asset.downloadName && reward.asset.type === 'image') {
-          link.download = reward.asset.downloadName;
+        link.textContent = asset.type === 'video' ? '動画を見る' : '壁紙を開く';
+        if (asset.downloadName && asset.type === 'image') {
+          link.download = asset.downloadName;
         }
         copy.appendChild(link);
       }
@@ -388,13 +416,57 @@
     image.src = imageUrl(src);
   }
 
-  function showNewRewards(keys) {
+  function showNewRewards(keys, progress, fallbackCandidateId = '') {
     const validRewards = (Array.isArray(keys) ? keys : [])
       .map(key => rewardConfig(key))
       .filter(Boolean);
     $('newRewardPanel').classList.toggle('hidden', validRewards.length === 0);
     $('newRewardList').replaceChildren();
     validRewards.forEach(reward => {
+      const rewardState = progress?.rewardStates?.find(item => item.key === reward.key) || reward;
+      const asset = resolvedRewardAsset(rewardState, fallbackCandidateId);
+
+      if (reward.key === 'wallpaper' && asset.available) {
+        const unlock = document.createElement('section');
+        unlock.className = 'wallpaper-unlock';
+
+        const chapter = document.createElement('p');
+        chapter.className = 'wallpaper-unlock-chapter';
+        chapter.textContent = 'CHAPTER I COMPLETE';
+
+        const title = document.createElement('h4');
+        title.textContent = `${asset.candidateName}さんの限定壁紙`;
+
+        const message = document.createElement('p');
+        message.className = 'wallpaper-unlock-message';
+        message.textContent = '15回目の投票で選んだファイナリストの壁紙を獲得しました。あなたのStoryに、この一枚を。';
+
+        const frame = document.createElement('div');
+        frame.className = 'wallpaper-unlock-frame';
+        const image = document.createElement('img');
+        image.className = 'wallpaper-unlock-image';
+        image.src = imageUrl(asset.url);
+        image.alt = `${asset.candidateName}さんの15回投票達成限定壁紙`;
+        image.decoding = 'async';
+        frame.appendChild(image);
+
+        const link = document.createElement('a');
+        link.className = 'wallpaper-unlock-button';
+        link.href = imageUrl(asset.url);
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.download = asset.downloadName;
+        link.textContent = '壁紙を開いて保存する';
+
+        const note = document.createElement('p');
+        note.className = 'wallpaper-unlock-note';
+        note.textContent = 'iPhoneでは画像を開き、長押しして「写真に保存」を選んでください。';
+
+        unlock.append(chapter, title, message, frame, link, note);
+        $('newRewardList').appendChild(unlock);
+        return;
+      }
+
       const chip = document.createElement('span');
       chip.className = 'new-reward-chip';
       chip.textContent = `${reward.threshold}回特典：${reward.title}`;
@@ -443,7 +515,11 @@
     }
 
     renderRewardTimeline($('completionRewardTimeline'), progress);
-    showNewRewards(data?.newlyUnlockedRewards || payload?.newlyUnlockedRewards || []);
+    showNewRewards(
+      data?.newlyUnlockedRewards || payload?.newlyUnlockedRewards || [],
+      progress,
+      candidate.id
+    );
     loadCompletionImage(
       `./assets/completion/${photoKey}.jpeg`,
       `${candidate.name}さんからの投票完了メッセージ`
@@ -513,12 +589,15 @@
     const mode = params.get('preview') || 'voting';
     const count = clamp(Number(params.get('count')) || 12, 0, CONFIG.period.maxVotes);
     const candidateId = params.get('candidate') || '01';
+    const candidate = safeCandidate(candidateId);
     const streakCount = Math.min(count, Number(params.get('streak')) || Math.max(1, count));
     const rewardStates = CONFIG.rewards.map(reward => ({
       threshold: reward.threshold,
       key: reward.key,
       earned: count >= reward.threshold,
       earnedAt: count >= reward.threshold ? '2026-09-15 12:00:00' : '',
+      candidateId: reward.key === 'wallpaper' && count >= reward.threshold ? candidateId : '',
+      candidateName: reward.key === 'wallpaper' && count >= reward.threshold ? candidate?.name : '',
     }));
     const next = CONFIG.rewards.find(reward => count < reward.threshold) || null;
     const progress = {

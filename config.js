@@ -2,8 +2,8 @@
   'use strict';
 
   /**
-   * 特典素材を追加するときは、対象特典の asset.url を設定し、
-   * asset.available を true に変更するだけで表示できます。
+   * 特典素材は投票ロジックと分離して管理します。
+   * 候補者別素材は byCandidate の候補者IDにURLを設定します。
    * 動画の場合は type: 'video'、画像の場合は type: 'image' を使用します。
    */
   const REWARDS = [
@@ -13,7 +13,20 @@
       chapter: 'Chapter I',
       title: '限定壁紙',
       description: 'Storyの世界をいつでもそばに。',
-      asset: { available: false, type: 'image', url: '', poster: '', downloadName: 'seijo-story-wallpaper' },
+      asset: {
+        available: true,
+        type: 'image',
+        url: '',
+        byCandidate: {
+          '01': './assets/rewards/wallpaper_01.jpeg',
+          '02': './assets/rewards/wallpaper_02.jpeg',
+          '03': './assets/rewards/wallpaper_03.jpeg',
+          '04': './assets/rewards/wallpaper_04.jpeg',
+          '05': './assets/rewards/wallpaper_05.jpeg',
+        },
+        poster: '',
+        downloadName: 'seijo-story-wallpaper',
+      },
     },
     {
       threshold: 30,
@@ -62,8 +75,8 @@
       liffId: '2010561104-dKFoBUJn',
       apiUrl: 'https://script.google.com/macros/s/AKfycbwUJrs-eZnxumXT_Aa9t1986lW0J6Px3UohbpLiY_64zUDjEL2XJs4t8OqEmfm-U1drqA/exec',
       shareUrl: 'https://liff.line.me/2010561104-dKFoBUJn',
-      assetVersion: 'story-20260901-v2',
-      clientVersion: '2026-09-01-story-v1',
+      assetVersion: 'story-20260914-wallpaper-v1',
+      clientVersion: '2026-09-14-wallpaper-v1',
       maxRetries: 3,
       requestTimeoutMs: 45000,
     }),
