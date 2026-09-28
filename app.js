@@ -70,12 +70,18 @@
     ) || null;
   }
 
+  function fileExtensionFromUrl(url) {
+    const path = String(url || '').split(/[?#]/, 1)[0];
+    const match = path.match(/\.([a-z0-9]+)$/i);
+    return match ? `.${match[1].toLowerCase()}` : '';
+  }
+
   function resolvedRewardAsset(reward, fallbackCandidateId = '') {
     const asset = reward?.asset || {};
     const candidateId = String(reward?.candidateId || fallbackCandidateId || '');
     const candidate = safeCandidate(candidateId);
     const url = asset.byCandidate?.[candidateId] || asset.url || '';
-    const extension = asset.type === 'image' ? '.jpeg' : '';
+    const extension = asset.type === 'image' ? (fileExtensionFromUrl(url) || '.jpeg') : '';
     return {
       ...asset,
       available: Boolean(asset.available && url),
@@ -217,7 +223,9 @@
         link.href = imageUrl(asset.url);
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
-        link.textContent = asset.type === 'video' ? '動画を見る' : '壁紙を開く';
+        link.textContent = asset.type === 'video'
+          ? '動画を見る'
+          : (reward.key === 'wallpaper' ? '壁紙を開く' : '画像を開いて保存');
         if (asset.downloadName && asset.type === 'image') {
           link.download = asset.downloadName;
         }
@@ -426,40 +434,43 @@
       const rewardState = progress?.rewardStates?.find(item => item.key === reward.key) || reward;
       const asset = resolvedRewardAsset(rewardState, fallbackCandidateId);
 
-      if (reward.key === 'wallpaper' && asset.available) {
+      if (['wallpaper', 'signed_image'].includes(reward.key) && asset.available) {
+        const isWallpaper = reward.key === 'wallpaper';
         const unlock = document.createElement('section');
-        unlock.className = 'wallpaper-unlock';
+        unlock.className = 'image-reward-unlock';
 
         const chapter = document.createElement('p');
-        chapter.className = 'wallpaper-unlock-chapter';
-        chapter.textContent = 'CHAPTER I COMPLETE';
+        chapter.className = 'image-reward-unlock-chapter';
+        chapter.textContent = `${reward.chapter.toUpperCase()} COMPLETE`;
 
         const title = document.createElement('h4');
-        title.textContent = `${asset.candidateName}さんの限定壁紙`;
+        title.textContent = `${asset.candidateName}さんの${reward.title}`;
 
         const message = document.createElement('p');
-        message.className = 'wallpaper-unlock-message';
-        message.textContent = '15回目の投票で選んだファイナリストの壁紙を獲得しました。あなたのStoryに、この一枚を。';
+        message.className = 'image-reward-unlock-message';
+        message.textContent = isWallpaper
+          ? '15回目の投票で選んだファイナリストの壁紙を獲得しました。あなたのStoryに、この一枚を。'
+          : '30回目の投票で選んだファイナリストのデジタルサイン入り画像を獲得しました。この一枚は、これからも変わらず保存できます。';
 
         const frame = document.createElement('div');
-        frame.className = 'wallpaper-unlock-frame';
+        frame.className = 'image-reward-unlock-frame';
         const image = document.createElement('img');
-        image.className = 'wallpaper-unlock-image';
+        image.className = 'image-reward-unlock-image';
         image.src = imageUrl(asset.url);
-        image.alt = `${asset.candidateName}さんの15回投票達成限定壁紙`;
+        image.alt = `${asset.candidateName}さんの${reward.threshold}回投票達成${reward.title}`;
         image.decoding = 'async';
         frame.appendChild(image);
 
         const link = document.createElement('a');
-        link.className = 'wallpaper-unlock-button';
+        link.className = 'image-reward-unlock-button';
         link.href = imageUrl(asset.url);
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.download = asset.downloadName;
-        link.textContent = '壁紙を開いて保存する';
+        link.textContent = isWallpaper ? '壁紙を開いて保存する' : 'サイン入り画像を開いて保存する';
 
         const note = document.createElement('p');
-        note.className = 'wallpaper-unlock-note';
+        note.className = 'image-reward-unlock-note';
         note.textContent = 'iPhoneでは画像を開き、長押しして「写真に保存」を選んでください。';
 
         unlock.append(chapter, title, message, frame, link, note);
@@ -596,8 +607,8 @@
       key: reward.key,
       earned: count >= reward.threshold,
       earnedAt: count >= reward.threshold ? '2026-09-15 12:00:00' : '',
-      candidateId: reward.key === 'wallpaper' && count >= reward.threshold ? candidateId : '',
-      candidateName: reward.key === 'wallpaper' && count >= reward.threshold ? candidate?.name : '',
+      candidateId: reward.asset?.byCandidate && count >= reward.threshold ? candidateId : '',
+      candidateName: reward.asset?.byCandidate && count >= reward.threshold ? candidate?.name : '',
     }));
     const next = CONFIG.rewards.find(reward => count < reward.threshold) || null;
     const progress = {

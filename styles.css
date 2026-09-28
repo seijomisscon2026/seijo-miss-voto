@@ -1044,7 +1044,7 @@ body.completion-mode .hero h1 {
   font-weight: 700;
 }
 
-.wallpaper-unlock {
+.image-reward-unlock {
   margin-top: 14px;
   padding: 18px 13px 16px;
   border: 1px solid rgba(154, 115, 50, .44);
@@ -1055,7 +1055,7 @@ body.completion-mode .hero h1 {
   box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .55), 0 14px 34px rgba(72, 11, 23, .12);
 }
 
-.wallpaper-unlock-chapter {
+.image-reward-unlock-chapter {
   margin: 0 0 5px;
   color: var(--gold-700);
   font-family: var(--sans);
@@ -1064,14 +1064,14 @@ body.completion-mode .hero h1 {
   letter-spacing: .2em;
 }
 
-.wallpaper-unlock h4 {
+.image-reward-unlock h4 {
   margin: 0;
   color: var(--wine-900);
   font-size: clamp(21px, 6vw, 27px);
   font-weight: 500;
 }
 
-.wallpaper-unlock-message {
+.image-reward-unlock-message {
   margin: 9px auto 14px;
   max-width: 31em;
   color: var(--muted);
@@ -1080,7 +1080,7 @@ body.completion-mode .hero h1 {
   line-height: 1.75;
 }
 
-.wallpaper-unlock-frame {
+.image-reward-unlock-frame {
   position: relative;
   width: min(100%, 330px);
   margin: 0 auto;
@@ -1092,8 +1092,8 @@ body.completion-mode .hero h1 {
   box-shadow: 0 12px 28px rgba(72, 11, 23, .17);
 }
 
-.wallpaper-unlock-frame::before,
-.wallpaper-unlock-frame::after {
+.image-reward-unlock-frame::before,
+.image-reward-unlock-frame::after {
   content: '';
   position: absolute;
   z-index: 1;
@@ -1102,28 +1102,28 @@ body.completion-mode .hero h1 {
   pointer-events: none;
 }
 
-.wallpaper-unlock-frame::before {
+.image-reward-unlock-frame::before {
   top: 2px;
   left: 2px;
   border-top: 1px solid var(--gold-500);
   border-left: 1px solid var(--gold-500);
 }
 
-.wallpaper-unlock-frame::after {
+.image-reward-unlock-frame::after {
   right: 2px;
   bottom: 2px;
   border-right: 1px solid var(--gold-500);
   border-bottom: 1px solid var(--gold-500);
 }
 
-.wallpaper-unlock-image {
+.image-reward-unlock-image {
   width: 100%;
   height: auto;
   display: block;
   border-radius: 1px 11px 1px 11px;
 }
 
-.wallpaper-unlock-button {
+.image-reward-unlock-button {
   width: min(100%, 330px);
   min-height: 50px;
   margin: 15px auto 0;
@@ -1142,7 +1142,7 @@ body.completion-mode .hero h1 {
   font-weight: 700;
 }
 
-.wallpaper-unlock-note {
+.image-reward-unlock-note {
   margin: 9px 0 0;
   color: var(--muted);
   font-family: var(--sans);
