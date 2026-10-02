@@ -40,6 +40,37 @@
     return `${path}${separator}v=${encodeURIComponent(CONFIG.app.assetVersion)}`;
   }
 
+  function absoluteImageUrl(path) {
+    return new URL(imageUrl(path), window.location.href).href;
+  }
+
+  function isLiffBrowser() {
+    try {
+      return Boolean(window.liff &&
+        typeof window.liff.isInClient === 'function' &&
+        window.liff.isInClient());
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function configureRewardAssetLink(link, path) {
+    const url = absoluteImageUrl(path);
+    link.href = url;
+    link.rel = 'noopener noreferrer';
+
+    link.addEventListener('click', event => {
+      if (!isLiffBrowser() || typeof window.liff.openWindow !== 'function') return;
+
+      event.preventDefault();
+      try {
+        window.liff.openWindow({ url, external: true });
+      } catch (_) {
+        window.location.assign(url);
+      }
+    });
+  }
+
   function safeCandidate(candidateId) {
     return state.candidates.find(candidate => candidate.id === String(candidateId || '')) ||
       CONFIG.candidates.find(candidate => candidate.id === String(candidateId || '')) || null;
@@ -220,15 +251,10 @@
       if (reward.earned && asset.available) {
         const link = document.createElement('a');
         link.className = 'reward-asset-link';
-        link.href = imageUrl(asset.url);
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
+        configureRewardAssetLink(link, asset.url);
         link.textContent = asset.type === 'video'
           ? '動画を見る'
           : (reward.key === 'wallpaper' ? '壁紙を開く' : '画像を開いて保存');
-        if (asset.downloadName && asset.type === 'image') {
-          link.download = asset.downloadName;
-        }
         copy.appendChild(link);
       }
 
@@ -463,15 +489,12 @@
 
         const link = document.createElement('a');
         link.className = 'image-reward-unlock-button';
-        link.href = imageUrl(asset.url);
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.download = asset.downloadName;
+        configureRewardAssetLink(link, asset.url);
         link.textContent = isWallpaper ? '壁紙を開いて保存する' : 'サイン入り画像を開いて保存する';
 
         const note = document.createElement('p');
         note.className = 'image-reward-unlock-note';
-        note.textContent = 'iPhoneでは画像を開き、長押しして「写真に保存」を選んでください。';
+        note.textContent = '画像が開いたら、長押しして端末へ保存してください。';
 
         unlock.append(chapter, title, message, frame, link, note);
         $('newRewardList').appendChild(unlock);
