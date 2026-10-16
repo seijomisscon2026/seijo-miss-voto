@@ -1316,6 +1316,44 @@ body.completion-mode .hero h1 {
   }
 }
 
+.offshots-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.offshots-photo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #d5c3a2;
+  border-radius: 8px;
+  background: #fffaf1;
+  color: #74142f;
+  text-align: center;
+  text-decoration: none;
+}
+
+.offshots-photo img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  background: #f3eadc;
+}
+
+.offshots-photo span {
+  padding: 12px 5px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.offshots-photo:focus-visible {
+  outline: 3px solid #74142f;
+  outline-offset: 3px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

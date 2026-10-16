@@ -109,20 +109,45 @@
 
   function resolvedRewardAsset(reward, fallbackCandidateId = '') {
     const asset = reward?.asset || {};
-    const candidateId = String(reward?.candidateId || fallbackCandidateId || '');
+    // Multi-image rewards must always use the candidate from the milestone vote history.
+    const candidateId = String(reward?.candidateId || (reward?.key === 'offshots' ? '' : fallbackCandidateId) || '');
     const candidate = safeCandidate(candidateId);
-    const url = asset.byCandidate?.[candidateId] || asset.url || '';
+    const selected = asset.byCandidate?.[candidateId] || asset.url || '';
+    const urls = (Array.isArray(selected) ? selected : [selected]).filter(url => typeof url === 'string' && url);
+    const url = urls[0] || '';
     const extension = asset.type === 'image' ? (fileExtensionFromUrl(url) || '.jpeg') : '';
     return {
       ...asset,
       available: Boolean(asset.available && url),
       url,
+      urls,
+      previewUrls: asset.previewsByCandidate?.[candidateId] || [],
       candidateId,
       candidateName: reward?.candidateName || candidate?.name || '',
       downloadName: candidateId && asset.downloadName
         ? `${asset.downloadName}-${candidateId}${extension}`
         : asset.downloadName,
     };
+  }
+
+  function createOffshotsGallery(asset) {
+    const gallery = document.createElement('div');
+    gallery.className = 'offshots-gallery';
+    asset.urls.forEach((url, index) => {
+      const link = document.createElement('a');
+      link.className = 'offshots-photo';
+      configureRewardAssetLink(link, url);
+      const image = document.createElement('img');
+      image.src = imageUrl(asset.previewUrls[index] || url);
+      image.alt = `${asset.candidateName}さんの未公開オフショット ${index + 1} / ${asset.urls.length}`;
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      const label = document.createElement('span');
+      label.textContent = `${index + 1}枚目を開いて保存`;
+      link.append(image, label);
+      gallery.appendChild(link);
+    });
+    return gallery;
   }
 
   function buildShareText(candidateName) {
@@ -249,13 +274,17 @@
       }
 
       if (reward.earned && asset.available) {
-        const link = document.createElement('a');
-        link.className = 'reward-asset-link';
-        configureRewardAssetLink(link, asset.url);
-        link.textContent = asset.type === 'video'
-          ? '動画を見る'
-          : (reward.key === 'wallpaper' ? '壁紙を開く' : '画像を開いて保存');
-        copy.appendChild(link);
+        if (reward.key === 'offshots') {
+          copy.appendChild(createOffshotsGallery(asset));
+        } else {
+          const link = document.createElement('a');
+          link.className = 'reward-asset-link';
+          configureRewardAssetLink(link, asset.url);
+          link.textContent = asset.type === 'video'
+            ? '動画を見る'
+            : (reward.key === 'wallpaper' ? '壁紙を開く' : '画像を開いて保存');
+          copy.appendChild(link);
+        }
       }
 
       item.append(medallion, copy);
@@ -459,6 +488,25 @@
     validRewards.forEach(reward => {
       const rewardState = progress?.rewardStates?.find(item => item.key === reward.key) || reward;
       const asset = resolvedRewardAsset(rewardState, fallbackCandidateId);
+
+      if (reward.key === 'offshots' && asset.available) {
+        const unlock = document.createElement('section');
+        unlock.className = 'image-reward-unlock';
+        const chapter = document.createElement('p');
+        chapter.className = 'image-reward-unlock-chapter';
+        chapter.textContent = 'CHAPTER III COMPLETE';
+        const title = document.createElement('h4');
+        title.textContent = `${asset.candidateName}さんの未公開オフショット5枚`;
+        const message = document.createElement('p');
+        message.className = 'image-reward-unlock-message';
+        message.textContent = '累計45回の投票、ありがとうございます。45回目に選んだファイナリストの5枚を獲得しました。その後の投票先が変わっても、この特典は変わりません。';
+        const note = document.createElement('p');
+        note.className = 'image-reward-unlock-note';
+        note.textContent = '各画像をタップして開き、長押しで保存してください。後から「獲得した特典」でも保存できます。';
+        unlock.append(chapter, title, message, createOffshotsGallery(asset), note);
+        $('newRewardList').appendChild(unlock);
+        return;
+      }
 
       if (['wallpaper', 'signed_image'].includes(reward.key) && asset.available) {
         const isWallpaper = reward.key === 'wallpaper';
