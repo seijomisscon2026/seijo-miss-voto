@@ -109,8 +109,9 @@
 
   function resolvedRewardAsset(reward, fallbackCandidateId = '') {
     const asset = reward?.asset || {};
-    // Multi-image rewards must always use the candidate from the milestone vote history.
-    const candidateId = String(reward?.candidateId || (reward?.key === 'offshots' ? '' : fallbackCandidateId) || '');
+    // Never replace a fixed reward with the candidate from a later/current vote.
+    const historyRequired = ['offshots', 'letter'].includes(reward?.key);
+    const candidateId = String(reward?.candidateId || (historyRequired ? '' : fallbackCandidateId) || '');
     const candidate = safeCandidate(candidateId);
     const selected = asset.byCandidate?.[candidateId] || asset.url || '';
     const urls = (Array.isArray(selected) ? selected : [selected]).filter(url => typeof url === 'string' && url);
@@ -508,8 +509,9 @@
         return;
       }
 
-      if (['wallpaper', 'signed_image'].includes(reward.key) && asset.available) {
+      if (['wallpaper', 'signed_image', 'letter'].includes(reward.key) && asset.available) {
         const isWallpaper = reward.key === 'wallpaper';
+        const isLetter = reward.key === 'letter';
         const unlock = document.createElement('section');
         unlock.className = 'image-reward-unlock';
 
@@ -518,19 +520,23 @@
         chapter.textContent = `${reward.chapter.toUpperCase()} COMPLETE`;
 
         const title = document.createElement('h4');
-        title.textContent = `${asset.candidateName}さんの${reward.title}`;
+        title.textContent = isLetter
+          ? `${asset.candidateName}さんからの手紙`
+          : `${asset.candidateName}さんの${reward.title}`;
 
         const message = document.createElement('p');
         message.className = 'image-reward-unlock-message';
         message.textContent = isWallpaper
           ? '15回目の投票で選んだファイナリストの壁紙を獲得しました。あなたのStoryに、この一枚を。'
-          : '30回目の投票で選んだファイナリストのデジタルサイン入り画像を獲得しました。この一枚は、これからも変わらず保存できます。';
+          : isLetter
+            ? '累計60回の投票、ありがとうございます。60回目に選んだファイナリストからの手紙を獲得しました。その後の投票先が変わっても、この一枚は変わりません。'
+            : '30回目の投票で選んだファイナリストのデジタルサイン入り画像を獲得しました。この一枚は、これからも変わらず保存できます。';
 
         const frame = document.createElement('div');
         frame.className = 'image-reward-unlock-frame';
         const image = document.createElement('img');
         image.className = 'image-reward-unlock-image';
-        image.src = imageUrl(asset.url);
+        image.src = imageUrl(asset.previewUrls[0] || asset.url);
         image.alt = `${asset.candidateName}さんの${reward.threshold}回投票達成${reward.title}`;
         image.decoding = 'async';
         frame.appendChild(image);
@@ -538,11 +544,14 @@
         const link = document.createElement('a');
         link.className = 'image-reward-unlock-button';
         configureRewardAssetLink(link, asset.url);
-        link.textContent = isWallpaper ? '壁紙を開いて保存する' : 'サイン入り画像を開いて保存する';
+        link.textContent = isWallpaper ? '壁紙を開いて保存する'
+          : isLetter ? '手紙画像を開いて保存する' : 'サイン入り画像を開いて保存する';
 
         const note = document.createElement('p');
         note.className = 'image-reward-unlock-note';
-        note.textContent = '画像が開いたら、長押しして端末へ保存してください。';
+        note.textContent = isLetter
+          ? '元の画像が開いたら、長押しして端末へ保存してください。後から「獲得した特典」でも保存できます。'
+          : '画像が開いたら、長押しして端末へ保存してください。';
 
         unlock.append(chapter, title, message, frame, link, note);
         $('newRewardList').appendChild(unlock);

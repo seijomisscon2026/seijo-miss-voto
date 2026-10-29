@@ -73,7 +73,21 @@
       chapter: 'Chapter IV',
       title: '候補者からの手紙画像',
       description: '一票一票への想いを、言葉にして。',
-      asset: { available: false, type: 'image', url: '', poster: '', downloadName: 'seijo-letter' },
+      asset: {
+        available: true,
+        type: 'image',
+        byCandidate: {
+          '01': './assets/rewards/letter_01.jpeg',
+          '02': './assets/rewards/letter_02.jpeg',
+          '03': './assets/rewards/letter_03.jpeg',
+          '04': './assets/rewards/letter_04.png',
+          '05': './assets/rewards/letter_05.jpeg',
+        },
+        previewsByCandidate: Object.fromEntries(['01', '02', '03', '04', '05'].map(id => [
+          id, [`./assets/rewards/previews/letter_${id}.jpeg`],
+        ])),
+        downloadName: 'seijo-letter',
+      },
     },
     {
       threshold: 80,
@@ -98,8 +112,8 @@
       liffId: '2010561104-dKFoBUJn',
       apiUrl: 'https://script.google.com/macros/s/AKfycbwUJrs-eZnxumXT_Aa9t1986lW0J6Px3UohbpLiY_64zUDjEL2XJs4t8OqEmfm-U1drqA/exec',
       shareUrl: 'https://liff.line.me/2010561104-dKFoBUJn',
-      assetVersion: 'story-20261017-offshots-v1',
-      clientVersion: '2026-10-17-offshots-v1',
+      assetVersion: 'story-20261029-letter-v1',
+      clientVersion: '2026-10-29-letter-v1',
       maxRetries: 3,
       requestTimeoutMs: 45000,
     }),
