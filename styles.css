@@ -1190,6 +1190,7 @@ body.completion-mode .hero h1 {
 
 .video-reward-unlock h4 {
   font-size: clamp(19px, 5vw, 25px);
+  text-wrap: balance;
 }
 
 .share-section {
