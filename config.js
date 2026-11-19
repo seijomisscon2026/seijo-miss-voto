@@ -95,7 +95,24 @@
       chapter: 'Chapter V',
       title: '20秒ありがとう動画',
       description: '物語の終幕を前に届く、感謝のメッセージ。',
-      asset: { available: false, type: 'video', url: '', poster: '', downloadName: '' },
+      asset: {
+        available: true,
+        type: 'video',
+        byCandidate: Object.fromEntries(['01', '02', '03', '04', '05'].map(id => [
+          id, `./assets/rewards/thank_you_video_${id}.mp4`,
+        ])),
+        postersByCandidate: Object.fromEntries(['01', '02', '03', '04', '05'].map(id => [
+          id, `./assets/rewards/previews/thank_you_video_${id}.jpeg`,
+        ])),
+        dimensionsByCandidate: {
+          '01': [720, 958],
+          '02': [720, 1280],
+          '03': [720, 1280],
+          '04': [720, 1280],
+          '05': [720, 1280],
+        },
+        downloadName: 'seijo-thank-you-video',
+      },
     },
     {
       threshold: 82,
@@ -112,8 +129,8 @@
       liffId: '2010561104-dKFoBUJn',
       apiUrl: 'https://script.google.com/macros/s/AKfycbwUJrs-eZnxumXT_Aa9t1986lW0J6Px3UohbpLiY_64zUDjEL2XJs4t8OqEmfm-U1drqA/exec',
       shareUrl: 'https://liff.line.me/2010561104-dKFoBUJn',
-      assetVersion: 'story-20261029-letter-v1',
-      clientVersion: '2026-10-29-letter-v1',
+      assetVersion: 'story-20261119-video80-v1',
+      clientVersion: '2026-11-19-video80-v1',
       maxRetries: 3,
       requestTimeoutMs: 45000,
     }),

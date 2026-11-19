@@ -1155,6 +1155,43 @@ body.completion-mode .hero h1 {
   font-weight: 700;
 }
 
+.video-reward-player {
+  width: min(100%, 330px);
+  margin: 14px auto 0;
+}
+
+.video-reward-player video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(62svh, 560px);
+  border: 1px solid rgba(154, 115, 50, .42);
+  border-radius: 3px 16px 3px 16px;
+  background: #19050a;
+  object-fit: contain;
+}
+
+.video-reward-error {
+  margin: 8px 0;
+  color: var(--wine-800);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.video-reward-unlock .image-reward-unlock-message,
+.video-reward-unlock .image-reward-unlock-note {
+  font-size: 14px;
+}
+
+.video-reward-unlock .image-reward-unlock-button {
+  font-size: 16px;
+}
+
+.video-reward-unlock h4 {
+  font-size: clamp(19px, 5vw, 25px);
+}
+
 .share-section {
   text-align: center;
 }

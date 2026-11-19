@@ -110,25 +110,55 @@
   function resolvedRewardAsset(reward, fallbackCandidateId = '') {
     const asset = reward?.asset || {};
     // Never replace a fixed reward with the candidate from a later/current vote.
-    const historyRequired = ['offshots', 'letter'].includes(reward?.key);
+    const historyRequired = ['offshots', 'letter', 'thank_you_video'].includes(reward?.key);
     const candidateId = String(reward?.candidateId || (historyRequired ? '' : fallbackCandidateId) || '');
     const candidate = safeCandidate(candidateId);
     const selected = asset.byCandidate?.[candidateId] || asset.url || '';
     const urls = (Array.isArray(selected) ? selected : [selected]).filter(url => typeof url === 'string' && url);
     const url = urls[0] || '';
-    const extension = asset.type === 'image' ? (fileExtensionFromUrl(url) || '.jpeg') : '';
+    const extension = ['image', 'video'].includes(asset.type)
+      ? (fileExtensionFromUrl(url) || (asset.type === 'video' ? '.mp4' : '.jpeg'))
+      : '';
     return {
       ...asset,
       available: Boolean(asset.available && url),
       url,
       urls,
       previewUrls: asset.previewsByCandidate?.[candidateId] || [],
+      poster: asset.postersByCandidate?.[candidateId] || asset.poster || '',
+      dimensions: asset.dimensionsByCandidate?.[candidateId] || [],
       candidateId,
       candidateName: reward?.candidateName || candidate?.name || '',
       downloadName: candidateId && asset.downloadName
         ? `${asset.downloadName}-${candidateId}${extension}`
         : asset.downloadName,
     };
+  }
+
+  function createVideoRewardPlayer(asset) {
+    const frame = document.createElement('div');
+    frame.className = 'video-reward-player';
+    const video = document.createElement('video');
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = 'none';
+    video.setAttribute('controls', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('preload', 'none');
+    video.setAttribute('aria-label', `${asset.candidateName}さんの80回投票達成・ありがとう動画`);
+    if (asset.dimensions[0] && asset.dimensions[1]) {
+      video.width = asset.dimensions[0];
+      video.height = asset.dimensions[1];
+    }
+    if (asset.poster) video.poster = imageUrl(asset.poster);
+    video.src = absoluteImageUrl(asset.url);
+    video.textContent = '動画を再生できない場合は、下のリンクから開いてください。';
+    const error = document.createElement('p');
+    error.className = 'video-reward-error hidden';
+    error.textContent = 'この画面で再生できない場合は、下のリンクから外部ブラウザで開いてください。';
+    video.addEventListener('error', () => error.classList.remove('hidden'));
+    frame.append(video, error);
+    return frame;
   }
 
   function createOffshotsGallery(asset) {
@@ -278,11 +308,12 @@
         if (reward.key === 'offshots') {
           copy.appendChild(createOffshotsGallery(asset));
         } else {
+          if (asset.type === 'video') copy.appendChild(createVideoRewardPlayer(asset));
           const link = document.createElement('a');
           link.className = 'reward-asset-link';
           configureRewardAssetLink(link, asset.url);
           link.textContent = asset.type === 'video'
-            ? '動画を見る'
+            ? '動画を開く・保存する'
             : (reward.key === 'wallpaper' ? '壁紙を開く' : '画像を開いて保存');
           copy.appendChild(link);
         }
@@ -505,6 +536,29 @@
         note.className = 'image-reward-unlock-note';
         note.textContent = '各画像をタップして開き、長押しで保存してください。後から「獲得した特典」でも保存できます。';
         unlock.append(chapter, title, message, createOffshotsGallery(asset), note);
+        $('newRewardList').appendChild(unlock);
+        return;
+      }
+
+      if (reward.key === 'thank_you_video' && rewardState.earned && asset.available) {
+        const unlock = document.createElement('section');
+        unlock.className = 'image-reward-unlock video-reward-unlock';
+        const chapter = document.createElement('p');
+        chapter.className = 'image-reward-unlock-chapter';
+        chapter.textContent = 'CHAPTER V COMPLETE';
+        const title = document.createElement('h4');
+        title.textContent = `${asset.candidateName}さんのありがとう動画`;
+        const message = document.createElement('p');
+        message.className = 'image-reward-unlock-message';
+        message.textContent = '累計80回の投票、ありがとうございます。80回目に選んだファイナリストの動画を獲得しました。その後の投票先が変わっても、この動画は変わりません。';
+        const link = document.createElement('a');
+        link.className = 'image-reward-unlock-button';
+        configureRewardAssetLink(link, asset.url);
+        link.textContent = '動画を開く・保存する';
+        const note = document.createElement('p');
+        note.className = 'image-reward-unlock-note';
+        note.textContent = '再生ボタンで音声付きの動画が流れます。表示できない場合は上のリンクから外部ブラウザで開いてください。後から「獲得した特典」でも視聴できます。保存方法は端末やブラウザにより異なります。';
+        unlock.append(chapter, title, message, createVideoRewardPlayer(asset), link, note);
         $('newRewardList').appendChild(unlock);
         return;
       }
