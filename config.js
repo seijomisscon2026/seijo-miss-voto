@@ -130,13 +130,14 @@
       apiUrl: 'https://script.google.com/macros/s/AKfycbwUJrs-eZnxumXT_Aa9t1986lW0J6Px3UohbpLiY_64zUDjEL2XJs4t8OqEmfm-U1drqA/exec',
       shareUrl: 'https://liff.line.me/2010561104-dKFoBUJn',
       assetVersion: 'story-20261119-video80-v1',
-      clientVersion: '2026-11-19-video80-v1',
+      clientVersion: '2026-11-20-deadline1159-v1',
       maxRetries: 3,
       requestTimeoutMs: 45000,
     }),
     period: Object.freeze({
       startDate: '2026-09-01',
       endDate: '2026-11-21',
+      endExclusiveAt: '2026-11-21T12:00:00+09:00',
       maxVotes: 82,
     }),
     candidates: Object.freeze([
